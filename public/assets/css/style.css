@@ -1,0 +1,45 @@
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle, #001f54, #000d26);
+    color: white;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+canvas {
+    display: block;
+    margin: auto;
+    background: black;
+    border: 5px solid #FFD700;
+}
+
+/* Touchscreen Controls */
+.touch-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.touch-controls div {
+    display: flex;
+    gap: 10px;
+}
+
+.touch-controls button {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    background: #FFD700;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.touch-controls button:active {
+    background: #e6c200;
+}
