@@ -3,15 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <meta name="description" content="Classic Snake Game - Play with keyboard or touch controls!">
+    <title>🐍 Snake Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>🐍 Snake Game</h1>
+    <!-- Game Title -->
+    <h1>🐍 Classic Snake Game</h1>
+
+    <!-- Game Canvas -->
     <canvas id="gameCanvas"></canvas>
 
-    <!-- Touch Controls -->
+    <!-- Score Display -->
+    <div class="score-container">
+        <p>🎯 Score: <span id="score">0</span></p>
+    </div>
+
+    <!-- Touch Controls for Mobile -->
     <div class="touch-controls">
         <button id="up">⬆️</button>
         <div>
@@ -21,7 +30,12 @@
         <button id="down">⬇️</button>
     </div>
 
-    <script src="assets/js/script.js"></script>
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Snake Game | Built with ❤️ by Pedro Dominguez</p>
+    </footer>
+
+    <script src="script.js"></script>
 
 </body>
 </html>
