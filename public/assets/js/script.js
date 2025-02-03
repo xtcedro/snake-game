@@ -1,22 +1,20 @@
-// Ensure the script runs only after the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Script Loaded: Initializing Snake Game...");
+    console.log("✅ Script Loaded: Snake Game Ready!");
 
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Canvas settings
     const tileSize = 20;
     const rows = canvas.height / tileSize;
     const cols = canvas.width / tileSize;
 
     let snake = [{ x: 200, y: 200 }];
     let food = getRandomFoodPosition();
-    let direction = { x: 0, y: 0 };
+    let direction = null; // 🛠️ FIX: No movement until player starts
     let score = 0;
     let gameRunning = true;
 
-    // Listen for keyboard input
+    // Keyboard input
     document.addEventListener("keydown", changeDirection);
 
     // Touchscreen Controls
@@ -27,22 +25,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function gameLoop() {
         if (!gameRunning) return;
+        if (!direction) return; // 🛠️ FIX: Wait for user input before starting
+
         update();
         draw();
         setTimeout(gameLoop, 100);
     }
 
     function update() {
-        // Move the snake
-        const head = { x: snake[0].x + direction.x * tileSize, y: snake[0].y + direction.y * tileSize };
+        if (!direction) return; // 🛠️ FIX: Prevent movement before input
 
-        // Check for wall collisions
+        const head = { 
+            x: snake[0].x + direction.x * tileSize, 
+            y: snake[0].y + direction.y * tileSize 
+        };
+
+        // Check wall collision
         if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
             gameOver();
             return;
         }
 
-        // Check for self-collision
+        // Check self-collision
         if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
             gameOver();
             return;
@@ -50,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         snake.unshift(head);
 
-        // Check if snake ate the food
         if (head.x === food.x && head.y === food.y) {
             score++;
             food = getRandomFoodPosition();
@@ -62,32 +65,35 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function draw() {
-        // Clear canvas
-        ctx.fillStyle = "#000d26"; // Dark background
+        ctx.fillStyle = "#000d26";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Draw snake
-        ctx.fillStyle = "#FFD700"; // Gold snake
+        ctx.fillStyle = "#FFD700";
         snake.forEach(segment => ctx.fillRect(segment.x, segment.y, tileSize, tileSize));
 
         // Draw food
-        ctx.fillStyle = "#FF4500"; // Orange food
+        ctx.fillStyle = "#FF4500";
         ctx.fillRect(food.x, food.y, tileSize, tileSize);
     }
 
     function changeDirection(event) {
+        if (!direction) gameLoop(); // 🛠️ FIX: Start game on first input
+
         const key = event.key.toLowerCase();
-        if (key === "arrowup" && direction.y === 0) direction = { x: 0, y: -1 };
-        if (key === "arrowdown" && direction.y === 0) direction = { x: 0, y: 1 };
-        if (key === "arrowleft" && direction.x === 0) direction = { x: -1, y: 0 };
-        if (key === "arrowright" && direction.x === 0) direction = { x: 1, y: 0 };
+        if (key === "arrowup" && direction?.y === 0) direction = { x: 0, y: -1 };
+        if (key === "arrowdown" && direction?.y === 0) direction = { x: 0, y: 1 };
+        if (key === "arrowleft" && direction?.x === 0) direction = { x: -1, y: 0 };
+        if (key === "arrowright" && direction?.x === 0) direction = { x: 1, y: 0 };
     }
 
     function move(dir) {
-        if (dir === "UP" && direction.y === 0) direction = { x: 0, y: -1 };
-        if (dir === "DOWN" && direction.y === 0) direction = { x: 0, y: 1 };
-        if (dir === "LEFT" && direction.x === 0) direction = { x: -1, y: 0 };
-        if (dir === "RIGHT" && direction.x === 0) direction = { x: 1, y: 0 };
+        if (!direction) gameLoop(); // 🛠️ FIX: Start game on first input
+
+        if (dir === "UP" && direction?.y === 0) direction = { x: 0, y: -1 };
+        if (dir === "DOWN" && direction?.y === 0) direction = { x: 0, y: 1 };
+        if (dir === "LEFT" && direction?.x === 0) direction = { x: -1, y: 0 };
+        if (dir === "RIGHT" && direction?.x === 0) direction = { x: 1, y: 0 };
     }
 
     function getRandomFoodPosition() {
@@ -103,9 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function gameOver() {
         gameRunning = false;
-        alert("Game Over! Your score: " + score);
-        location.reload(); // Restart game
+        alert(`Game Over! Your score: ${score}`);
+        location.reload();
     }
-
-    gameLoop();
 });
