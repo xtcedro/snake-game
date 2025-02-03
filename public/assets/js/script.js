@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Script Loaded: Snake Game Ready!");
+    console.log("✅ Snake Game Loaded!");
 
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
@@ -10,12 +10,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let snake = [{ x: 200, y: 200 }];
     let food = getRandomFoodPosition();
-    let direction = null; // 🛠️ FIX: No movement until player starts
+    let direction = null;
     let score = 0;
-    let gameRunning = true;
+    let gameRunning = false;
 
-    // Keyboard input
-    document.addEventListener("keydown", changeDirection);
+    // Start game on first input
+    function startGame() {
+        if (!gameRunning) {
+            console.log("🚀 Game Started!");
+            gameRunning = true;
+            requestAnimationFrame(gameLoop);
+        }
+    }
+
+    // Keyboard Controls
+    document.addEventListener("keydown", (event) => {
+        startGame(); // Ensure game starts
+        const key = event.key.toLowerCase();
+        if (key === "arrowup" && direction?.y === 0) direction = { x: 0, y: -1 };
+        if (key === "arrowdown" && direction?.y === 0) direction = { x: 0, y: 1 };
+        if (key === "arrowleft" && direction?.x === 0) direction = { x: -1, y: 0 };
+        if (key === "arrowright" && direction?.x === 0) direction = { x: 1, y: 0 };
+    });
 
     // Touchscreen Controls
     document.getElementById("up").addEventListener("click", () => move("UP"));
@@ -23,17 +39,23 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("left").addEventListener("click", () => move("LEFT"));
     document.getElementById("right").addEventListener("click", () => move("RIGHT"));
 
+    function move(dir) {
+        startGame(); // Ensure game starts
+        if (dir === "UP" && direction?.y === 0) direction = { x: 0, y: -1 };
+        if (dir === "DOWN" && direction?.y === 0) direction = { x: 0, y: 1 };
+        if (dir === "LEFT" && direction?.x === 0) direction = { x: -1, y: 0 };
+        if (dir === "RIGHT" && direction?.x === 0) direction = { x: 1, y: 0 };
+    }
+
     function gameLoop() {
         if (!gameRunning) return;
-        if (!direction) return; // 🛠️ FIX: Wait for user input before starting
-
         update();
         draw();
-        setTimeout(gameLoop, 100);
+        setTimeout(() => requestAnimationFrame(gameLoop), 100);
     }
 
     function update() {
-        if (!direction) return; // 🛠️ FIX: Prevent movement before input
+        if (!direction) return;
 
         const head = { 
             x: snake[0].x + direction.x * tileSize, 
@@ -68,32 +90,11 @@ document.addEventListener("DOMContentLoaded", function () {
         ctx.fillStyle = "#000d26";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Draw snake
         ctx.fillStyle = "#FFD700";
         snake.forEach(segment => ctx.fillRect(segment.x, segment.y, tileSize, tileSize));
 
-        // Draw food
         ctx.fillStyle = "#FF4500";
         ctx.fillRect(food.x, food.y, tileSize, tileSize);
-    }
-
-    function changeDirection(event) {
-        if (!direction) gameLoop(); // 🛠️ FIX: Start game on first input
-
-        const key = event.key.toLowerCase();
-        if (key === "arrowup" && direction?.y === 0) direction = { x: 0, y: -1 };
-        if (key === "arrowdown" && direction?.y === 0) direction = { x: 0, y: 1 };
-        if (key === "arrowleft" && direction?.x === 0) direction = { x: -1, y: 0 };
-        if (key === "arrowright" && direction?.x === 0) direction = { x: 1, y: 0 };
-    }
-
-    function move(dir) {
-        if (!direction) gameLoop(); // 🛠️ FIX: Start game on first input
-
-        if (dir === "UP" && direction?.y === 0) direction = { x: 0, y: -1 };
-        if (dir === "DOWN" && direction?.y === 0) direction = { x: 0, y: 1 };
-        if (dir === "LEFT" && direction?.x === 0) direction = { x: -1, y: 0 };
-        if (dir === "RIGHT" && direction?.x === 0) direction = { x: 1, y: 0 };
     }
 
     function getRandomFoodPosition() {
